@@ -14,7 +14,7 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-define('CUSTOM_DATA_HELPER_VERSION', '0.3.10.dev');
+define('CUSTOM_DATA_HELPER_VERSION', '0.5.dev');
 define('CUSTOM_DATA_HELPER_LOG_LEVEL', 1);
 
 // log levels
@@ -25,9 +25,10 @@ define('CUSTOM_DATA_HELPER_LOG_ERROR', 5);
 class CRM_YOURPROJECTNSHERE_CustomData {
 
   /** caches custom field data, indexed by group name */
-  protected static $custom_group2name  = NULL;
-  protected static $custom_group_cache = array();
-  protected static $custom_field_cache = array();
+  protected static $custom_group2name       = NULL;
+  protected static $custom_group2table_name = NULL;
+  protected static $custom_group_cache      = array();
+  protected static $custom_field_cache      = array();
 
   protected $ts_domain = NULL;
   protected $version   = CUSTOM_DATA_HELPER_VERSION;
@@ -496,18 +497,36 @@ class CRM_YOURPROJECTNSHERE_CustomData {
    */
   public static function getGroup2Name() {
     if (self::$custom_group2name === NULL) {
-      // load groups
-      $group_search = civicrm_api3('CustomGroup', 'get', array(
-        'return'       => 'name',
-        'option.limit' => 0,
-        ));
-      self::$custom_group2name = array();
-      foreach ($group_search['values'] as $customGroup) {
-        self::$custom_group2name[$customGroup['id']] = $customGroup['name'];
-      }
+      self::loadGroups();
     }
-
     return self::$custom_group2name;
+  }
+
+  /**
+   * Get a mapping: custom_group_id => table_name
+   */
+  public static function getGroup2TableName() {
+    if (self::$custom_group2table_name === NULL) {
+      self::loadGroups();
+    }
+    return self::$custom_group2table_name;
+  }
+
+
+  /**
+   * Load group data (all groups)
+   */
+  protected static function loadGroups() {
+    self::$custom_group2name = array();
+    self::$custom_group2table_name = array();
+    $group_search = civicrm_api3('CustomGroup', 'get', array(
+      'return'       => 'name,table_name',
+      'option.limit' => 0,
+      ));
+    foreach ($group_search['values'] as $customGroup) {
+      self::$custom_group2name[$customGroup['id']]       = $customGroup['name'];
+      self::$custom_group2table_name[$customGroup['id']] = $customGroup['table_name'];
+    }
   }
 
   /**
