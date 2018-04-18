@@ -95,7 +95,7 @@ class CRM_YOURPROJECTNSHERE_CustomData {
        return;
     } else {
        // update OptionGroup
-       $this->updateEntity('OptionGroup', $data, $optionGroup);
+       $this->updateEntity('OptionGroup', $data, $optionGroup, array('is_active'));
     }
 
     // now run the update for the OptionValues
@@ -113,7 +113,7 @@ class CRM_YOURPROJECTNSHERE_CustomData {
           $this->log(CUSTOM_DATA_HELPER_LOG_ERROR, "Couldn't create/update OptionValue: " . json_encode($optionValueSpec));
        } else {
           // update OptionValue
-          $this->updateEntity('OptionValue', $optionValueSpec, $optionValue);
+          $this->updateEntity('OptionValue', $optionValueSpec, $optionValue, array('is_active'));
        }
     }
   }
@@ -283,6 +283,15 @@ class CRM_YOURPROJECTNSHERE_CustomData {
        if (isset($current_data[$field]) && $value != $current_data[$field]) {
           $update_query[$field] = $value;
        }
+    }
+
+    // if _no_override list is set, remove those fields from the update
+    if (isset($requested_data['_no_override']) && is_array($requested_data['_no_override'])) {
+      foreach ($requested_data['_no_override'] as $field_name) {
+        if (isset($update_query[$field_name])) {
+          unset($update_query[$field_name]);
+        }
+      }
     }
 
     // run update if required
