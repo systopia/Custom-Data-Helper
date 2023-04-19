@@ -137,7 +137,11 @@ class CRM_YOURPROJECTNSHERE_CustomData {
         $extends_list = array();
         foreach ($data['extends_entity_column_value'] as $activity_type) {
           if (!is_numeric($activity_type)) {
-            $activity_type = CRM_Core_OptionGroup::getValue('activity_type', $activity_type, 'name');
+            $activity_type = civicrm_api3('OptionValue', 'getsingle', [
+              'option_group_id' => 'activity_type',
+              'name' => $activity_type,
+              'return' => 'value'
+            ]);
           }
           if ($activity_type) {
             $extends_list[] = $activity_type;
