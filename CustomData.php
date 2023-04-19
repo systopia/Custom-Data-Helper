@@ -784,4 +784,20 @@ class CRM_YOURPROJECTNSHERE_CustomData {
       return NULL;
     }
   }
+
+  /**
+   * Get CustomField entity (cached)
+   */
+  public static function getCustomFieldsForGroups($custom_group_names) {
+    self::cacheCustomGroups($custom_group_names);
+    $fields = [];
+    foreach ($custom_group_names as $custom_group_name) {
+      foreach (self::$custom_group_cache[$custom_group_name] as $field_id => $field) {
+        if (is_numeric($field_id)) {
+          $fields[] = $field;
+        }
+      }
+    }
+    return $fields;
+  }
 }
