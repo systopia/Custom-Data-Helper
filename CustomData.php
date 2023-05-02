@@ -800,6 +800,9 @@ class CRM_YOURPROJECTNSHERE_CustomData {
   /**
    * Get an option value from an option group
    *
+   * This function was specifically introduced as 1:1 replacement
+   *  for the deprecated CRM_Core_OptionGroup::getValue function
+   *
    * @param string $groupName
    *   name of the group
    *
