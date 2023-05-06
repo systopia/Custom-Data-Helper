@@ -137,11 +137,7 @@ class CRM_YOURPROJECTNSHERE_CustomData {
         $extends_list = array();
         foreach ($data['extends_entity_column_value'] as $activity_type) {
           if (!is_numeric($activity_type)) {
-            $activity_type = civicrm_api3('OptionValue', 'getvalue', [
-              'option_group_id' => 'activity_type',
-              'name' => $activity_type,
-              'return' => 'value'
-            ]);
+            $activity_type = self::getOptionValue('activity_type', $activity_type, 'name');
           }
           if ($activity_type) {
             $extends_list[] = $activity_type;
@@ -799,5 +795,48 @@ class CRM_YOURPROJECTNSHERE_CustomData {
       }
     }
     return $fields;
+  }
+
+  /**
+   * Get an option value from an option group
+   *
+   * This function was specifically introduced as 1:1 replacement
+   *  for the deprecated CRM_Core_OptionGroup::getValue function
+   *
+   * @param string $groupName
+   *   name of the group
+   *
+   * @param $label
+   *   label/name of the requested option value
+   *
+   * @param string $label_field
+   *   field to look in for the label, e.g. 'label' or 'name'
+   *
+   * @param string $label_type
+   *   *ignored*
+   *
+   * @param string $value_field
+   *   *ignored*
+   *
+   * @return string
+   *   value of the OptionValue entity if found
+   *
+   * @throws Exception
+   */
+  public static function getOptionValue($group_name, $label, $label_field = 'label', $label_type = 'String', $value_field = 'value')
+  {
+    if (empty($label) || empty($group_name)) {
+      return NULL;
+    }
+
+    // build/run API query
+    $value = civicrm_api3('OptionValue', 'getvalue', [
+      'option_group_id' => $group_name,
+      $label_field => $label,
+      'return' => $value_field
+    ]);
+
+    // anything else to do here?
+    return (string) $value;
   }
 }
