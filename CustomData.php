@@ -15,7 +15,7 @@
 +--------------------------------------------------------*/
 
 class CRM_YOURPROJECTNSHERE_CustomData {
-  const CUSTOM_DATA_HELPER_VERSION   = '0.9';
+  const CUSTOM_DATA_HELPER_VERSION   = '0.10-dev';
   const CUSTOM_DATA_HELPER_LOG_LEVEL = 0;
   const CUSTOM_DATA_HELPER_LOG_DEBUG = 1;
   const CUSTOM_DATA_HELPER_LOG_INFO  = 3;
