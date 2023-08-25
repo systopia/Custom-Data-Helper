@@ -338,7 +338,7 @@ class CRM_YOURPROJECTNSHERE_CustomData {
    *                            examples are '.' (default) or '__' to avoid drupal form field id issues
    */
   public static function labelCustomFields(&$data, $depth=1, $separator = '.') {
-    if ($depth == 0) return;
+    if ($depth <= 0) return;
 
     $custom_fields_used = array();
     foreach ($data as $key => $value) {
@@ -360,7 +360,7 @@ class CRM_YOURPROJECTNSHERE_CustomData {
 
       // recursively look into that array
       if (is_array($value) && $depth > 0) {
-        self::labelCustomFields($value, $depth-1);
+        self::labelCustomFields($value, $depth-1, $separator);
       }
     }
   }
