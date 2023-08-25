@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | SYSTOPIA CUSTOM DATA HELPER                            |
-| Copyright (C) 2018-2020 SYSTOPIA                       |
+| Copyright (C) 2018-2023 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 | Source: https://github.com/systopia/Custom-Data-Helper |
 +--------------------------------------------------------+
@@ -332,10 +332,12 @@ class CRM_YOURPROJECTNSHERE_CustomData {
    * function to replace custom_XX notation with the more
    * stable "<custom_group_name>.<custom_field_name>" format
    *
-   * @param $data   array  key=>value data, keys will be changed
-   * @param $depth  int    recursively follow arrays
+   * @param $data       array   key=>value data, keys will be changed
+   * @param $depth      int     recursively follow arrays
+   * @param $separator  string  separator to be used.
+   *                            examples are '.' (default) or '__' to avoid drupal form field id issues
    */
-  public static function labelCustomFields(&$data, $depth=1) {
+  public static function labelCustomFields(&$data, $depth=1, $separator = '.') {
     if ($depth == 0) return;
 
     $custom_fields_used = array();
@@ -351,7 +353,7 @@ class CRM_YOURPROJECTNSHERE_CustomData {
     // replace names
     foreach ($data as $key => &$value) {
       if (preg_match('#^custom_(?P<field_id>\d+)$#', $key, $match)) {
-        $new_key = self::getFieldIdentifier($match['field_id']);
+        $new_key = self::getFieldIdentifier($match['field_id'], $separator);
         $data[$new_key] = $value;
         unset($data[$key]);
       }
@@ -363,7 +365,19 @@ class CRM_YOURPROJECTNSHERE_CustomData {
     }
   }
 
-  public static function getFieldIdentifier($field_id) {
+  /**
+   * Function to render a unified field identifier of the compatible
+   *  "<custom_group_name>.<custom_field_name>"
+   * format
+   *
+   * @note This is intended for use with APIv3, since APIv4 already has a similar thing built in
+   *
+   * @param $field_id   string the field ID
+   * @param $separator  string the separator to used, by default '.'
+   *
+   * @see getFieldIdentifier
+   */
+  public static function getFieldIdentifier($field_id, $separator = '.') {
     // just to be on the safe side
     self::cacheCustomFields(array($field_id));
 
@@ -371,7 +385,7 @@ class CRM_YOURPROJECTNSHERE_CustomData {
     $custom_field = self::$custom_field_cache[$field_id];
     if ($custom_field) {
       $group_name = self::getGroupName($custom_field['custom_group_id']);
-      return "{$group_name}.{$custom_field['name']}";
+      return "{$group_name}{$separator}{$custom_field['name']}";
     } else {
       return 'FIELD_NOT_FOUND_' . $field_id;
     }
