@@ -844,11 +844,16 @@ class CRM_YOURPROJECTNSHERE_CustomData {
     }
 
     // build/run API query
-    $value = civicrm_api3('OptionValue', 'getvalue', [
-      'option_group_id' => $group_name,
-      $label_field => $label,
-      'return' => $value_field
-    ]);
+      try {
+        $value = civicrm_api3('OptionValue', 'getvalue', [
+          'option_group_id' => $group_name,
+          $label_field => $label,
+          'return' => $value_field
+        ]);
+      }
+      catch (CRM_Core_Exception $exception) {
+        return NULL;
+      }
 
     // anything else to do here?
     return (string) $value;
