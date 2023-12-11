@@ -2,7 +2,7 @@
 
 Helper class for CiviCRM Extensions
 
-This class can be copied into any CiviCRM extension to facilitate creating, updating and deleting custom data. It is therefore a close realtive to [CiviCoop's config items](https://github.com/CiviCooP/org.civicoop.configitems).
+This class can be copied into any CiviCRM extension to facilitate creating, updating and deleting custom data. It is therefore a close realtive to [CiviCoop's config items](https://lab.civicrm.org/extensions/configitems).
 
 Disclaimer: This is still under development. Current functionality:
 
