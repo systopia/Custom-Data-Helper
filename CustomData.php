@@ -329,6 +329,17 @@ class CRM_YOURPROJECTNSHERE_CustomData {
   }
 
   /**
+   * Flush all internal caches
+   */
+  public static function flushCashes() {
+    self::$custom_group2name = null;
+    self::$custom_group2table_name = null;
+    self::$custom_group_cache = [];
+    self::$custom_group_spec_cache = [];
+    self::$custom_field_cache = [];
+  }
+
+  /**
    * function to replace custom_XX notation with the more
    * stable "<custom_group_name>.<custom_field_name>" format
    *
