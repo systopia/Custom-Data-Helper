@@ -428,7 +428,7 @@ class CRM_YOURPROJECTNSHERE_CustomData {
    */
   public static function getGroupSpecs($group_id) {
     // just to be on the safe side
-    self::cacheCust omGroupSpecs([$group_id]);
+    self::cacheCustomGroupSpecs([$group_id]);
 
     // get custom field
     $custom_group = self::$custom_group_spec_cache[$group_id];
